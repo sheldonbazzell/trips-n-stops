@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Waypoints in directions</title>
+    <style>
+      #right-panel {
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+
+      #right-panel select, #right-panel input {
+        font-size: 15px;
+        margin-top: 10px;
+      }
+
+      #right-panel select {
+        width: 100%;
+      }
+
+      #right-panel i {
+        font-size: 12px;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 20px;
+      }
+      #left{
+          display: inline-block;
+          width: 60%;
+          height: 90%;
+      }
+      #map {
+        height: 90%;
+        width: 90%;
+        margin-top: 40px;
+      }
+      #right-panel {
+        height: 30%;
+      }
+      #input {
+        margin: 20px;
+        border-width: 2px;
+        width: 40%;
+        display: inline-block;
+        vertical-align: top;
+        /*height: 400px;*/
+        text-align: left;
+        padding-top: 0;
+      }
+      .new-field {
+        width: 200px;
+        margin-top: 10px;
+      }
+      .waypoints, .remove {
+        display: inline-block;
+      }
+      .waypoints {
+        margin-right: 3px;
+      }
+      #directions-panel {
+        vertical-align: top;
+        margin-top: 10px;
+        padding: 10px;
+        display: inline-block;
+      }
+      .cities{
+          display: inline-block;
+          vertical-align: top;
+          margin-left: 30px;
+          margin-top: 20px;
+      }
+      .location{
+          display: block;
+      }
+      .second{
+          margin-left: 10px;
+      }
+      h3.address{
+          display: inline-block;
+      }
+      button.btn-xs {
+          display: inline-block;
+          vertical-align: top;
+      }
+      #save-trip{
+          margin-left: 20px;
+      }
+      button.remove{
+          margin-left: 5px;
+          margin-top: 10px;
+      }
+      #trafficToggle{
+        position: relative;
+        display: block;
+        cursor: pointer;
+      }
+    </style>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+  </head>
+  <body>
+      <nav class="navbar navbar-default navbar-fixed-top">
+         <div class="container">
+            <h2>trip tracker</h2>
+            <!--<button type="button" class="logout btn btn-primary"><a href="/logout">Logout</a></button>-->
+         </div>
+     </nav>
+     <div id='left'>
+         <div id="map"></div>
+         <a id="trafficToggle">Toggle Traffic Layer</a>
+         <div id="right-panel">
+         <div id="input">
+         <input type="text" id="start" placeholder="Start" name="start">
+         <input type='button' id="new" value="New Field">
+         <div id="new-field"></div>
+         <input type="text" id="end" placeholder="End" name="end">
+         <input type="submit" id="submit">
+         </div>
+         <div id="directions-panel"></div>
+         <form id="save-trip" action="/process_save" method="post">
+             <button type="button" class="btn btn-default btn-sm">Save My Trip</a></button>
+        </form>
+         </div>
+     </div>
+      <div class="cities"></div>
+    <script>
+      $(document).ready(function(){
+        var x = "<div class='box'><input class='places' name='waypoints' type='text' placeholder='Waypoint'><button class='btn btn-default btn-xs remove'>X</button></div>"
+        $('#new').click(function(){
+          $('#new-field').append(x);
+          $('.remove').on('click', function(){
+            $(this).parent('.box').remove();
+        });
+      });
+    $(document).on('click', 'button.show', function(){
+        if($(this).siblings('.radio').css('display') != 'block' ){
+            $(this).siblings('.radio').toggle();
+            $(this).siblings('.int_point').toggle();
+        }
+        else{
+            var route = $(this).siblings('.address').attr('data-url');
+            var $this = $(this);
+            $.get(route, function(res) {
+               var yelpbiz = "";
+               yelpbiz += "<label><input class='radio_button' type='radio' name='" +route+"' value = 'Restaurant' checked>Restaurants</label>"
+               yelpbiz += "<label class='second'><input class='radio_button' type='radio' name='" +route+"' value = 'Park' >Parks</label>"
+               yelpbiz += "<label class='second'><input class='radio_button' type='radio' name='" +route+"' value = 'Hotel' >Hotels</label>"
+               $this.siblings('.radio').html(yelpbiz);
+               yelpbiz = "";
+               for(var i = 0; i < 4 && i < res.businesses.length; i++) {
+                 yelpbiz += "<p>Restaurant:<a href='"+res.businesses[i].url+"' target='_blank'> ";
+                 yelpbiz += res.businesses[i].name;
+                 yelpbiz += "</a> Rating: <img src='"+res.businesses[i].rating_img_url_small+ "'/></p>";
+               };
+               console.log(res);
+               $this.siblings('.radio').css('display','inline-block');
+               $this.siblings('.int_point').html(yelpbiz);
+         });
+        }
+    })
+     $(document).on('click', '.radio_button', function(){
+         var term = $(this).val();
+         var route = $(this).parent().parent().siblings('.address').attr('data-url')+'/'+term;
+         var $this = $(this);
+         $.get(route, function(res) {
+            var yelpbiz = "";
+             for(var i = 0; i < 4 && i < res.businesses.length; i++) {
+                 yelpbiz += "<p>"+term+":<a href='"+res.businesses[i].url+"' target='_blank'> ";
+                 yelpbiz += res.businesses[i].name;
+                 yelpbiz += "</a> Rating: <img src='"+res.businesses[i].rating_img_url_small+ "'/></p>";
+             };
+            $this.parent().parent().siblings('.int_point').html(yelpbiz);
+       });
+      })
+    });
+
+
+      function initMap() {
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 10,
+          center: {lat: 41.85, lng: -87.65}
+        });
+        directionsDisplay.setMap(map);
+        document.getElementById('submit').addEventListener('click', function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        });
+        var input1 = document.getElementById('start');
+        var input2 = document.getElementById('end');
+        var autocomplete1 = new google.maps.places.Autocomplete(input1);
+        var autocomplete2 = new google.maps.places.Autocomplete(input2);
+        $(document).on('click', "#new-field input[type=text]",function () {
+          var currentInp = document.getElementsByClassName('places');
+          for (i=0; i < currentInp.length; i++){
+            var placeBox = new google.maps.places.Autocomplete(currentInp[i]);
+          }
+        });
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            map.setCenter(pos);
+          });
+        }
+        var trafficLayer = new google.maps.TrafficLayer();
+        trafficLayer.setMap(map);
+        google.maps.event.addDomListener(document.getElementById('trafficToggle'), 'click', toggleTraffic);
+        function toggleTraffic(){
+          if(trafficLayer.getMap() == null){
+            //traffic layer is disabled.. enable it
+            trafficLayer.setMap(map);
+          } else {
+            //traffic layer is enabled.. disable it
+            trafficLayer.setMap(null);
+          }
+        }
+        google.maps.event.addDomListener(window, 'load', initMap);
+      }
+
+      function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        var wpz = "";
+        var ori = document.getElementById('start').value;
+        var dest = document.getElementById('end').value;
+        var hidden = "";
+        var yelpcity = "";
+        // yelpcity += "<div class='location'><h3 class='address' data-url='/data/";
+        // yelpcity += ori;
+        // yelpcity += "'>"
+        // yelpcity += ori;
+        // yelpcity += "</h3><button class='show btn btn-default btn-xs'>+</button><div class='radio'></div><div class='int_point'></div></div>";
+
+        var waypts = [];
+        var checkboxArray = document.getElementsByClassName('places');
+        for (var i = 0; i < checkboxArray.length; i++) {
+          waypts.push({
+            location: checkboxArray[i].value,
+            stopover: true
+          });
+          yelpcity += "<div class='location'><h3 class='address' data-url='/data/";
+          yelpcity += checkboxArray[i].value;
+          yelpcity += "'>"
+          yelpcity += checkboxArray[i].value;
+          yelpcity += "</h3><button class='show btn btn-default btn-xs'>+</button><div class='radio'></div><div class='int_point'></div></div>";
+        };
+        yelpcity += "<div class='location'><h3 class='address' data-url='/data/";
+        yelpcity += dest;
+        yelpcity += "'>"
+        yelpcity += dest;
+        yelpcity += "</h3><button class='show btn btn-default btn-xs'>+</button><div class='radio'></div><div class='int_point'></div></div>";
+        $('.cities').html(yelpcity);
+        directionsService.route({
+          origin: document.getElementById('start').value,
+          destination: document.getElementById('end').value,
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING',
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            var route = response.routes[0];
+            var summaryPanel = document.getElementById('directions-panel');
+            summaryPanel.innerHTML = '';
+            // For each route, display summary information.
+            for (var i = 0; i < route.legs.length; i++) {
+              var routeSegment = i + 1;
+              summaryPanel.innerHTML += '<b>Route Segment: ' + routeSegment +
+                  '</b><br>';
+              summaryPanel.innerHTML += route.legs[i].start_address + ' to ';
+              summaryPanel.innerHTML += route.legs[i].end_address + '<br>';
+              summaryPanel.innerHTML += route.legs[i].distance.text + '<br><br>';
+            }
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
+        });
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZVxJCWqEgaGA3AY_E0J1r4I6XKUWKJIU&libraries=places&callback=initMap">
+  </script>
+  </body>
+</html>

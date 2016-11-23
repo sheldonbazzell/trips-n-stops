@@ -1,0 +1,22 @@
+body {
+	padding: 20px;
+}
+
+.map, .yelp {
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 3%;
+}
+
+.map {
+	width: 50%;
+	height: 600px;
+	margin-right: 10%;
+	background-color: blue;
+}
+
+.yelp {
+	width: 25%;
+	height: 800px;
+	background-color: yellow;
+}
