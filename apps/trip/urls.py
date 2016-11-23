@@ -18,6 +18,11 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.index),
-    url(r"^data/(?P<location>(\S+\s*){1,})$", views.yelp)
-
+    url(r"^data/(?P<location>(\S+\s*){1,})/(?P<term>[a-zA-Z0-9]*?)$", views.yelp),
+    url(r'^process_save$',views.process_save),
+    url(r'^show_route/(?P<trip_id>\d+?)$',views.show_route),
+    url(r'^login$',views.login_check),
+    url(r'^register$',views.register),
+    url(r'^logout$',views.logout),
+    url(r"^add_comment/(?P<trip_id>\d+?)",views.add_comment),
 ]

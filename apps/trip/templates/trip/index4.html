@@ -47,7 +47,6 @@
         width: 40%;
         display: inline-block;
         vertical-align: top;
-        /*height: 400px;*/
         text-align: left;
         padding-top: 0;
       }
@@ -82,10 +81,6 @@
       h3.address{
           display: inline-block;
       }
-      button.btn-xs {
-          display: inline-block;
-          vertical-align: top;
-      }
       #save-trip{
           margin-left: 20px;
       }
@@ -98,6 +93,96 @@
         display: block;
         cursor: pointer;
       }
+      .navbar {
+       height: 70px;
+     }
+     .container{
+       height: 100%;
+     }
+     .navbar h2{
+       display: inline-block;
+     }
+     .login-head {
+       vertical-align: top;
+       width: 12%;
+       margin-top: -60px;
+       float: right;
+       display: inline-block;
+     }
+     .login-head-reg, .login-head-log {
+       display: inline-block;
+       vertical-align: top;
+       font-weight: lighter;
+       margin: 1.2px 0px 0px 0px;
+     }
+     .form-control {
+       padding: 0px;
+     }
+     .login-body {
+       margin-top: 20px;
+       float: right;
+       width: 10%;
+       background-color: white;
+       border-radius: 5px;
+       display: none;
+       margin-right: 20px;
+     }
+     .reg-body {
+       margin-top: 20px;
+       float: right;
+       width: 10%;
+       background-color: white;
+       border-radius: 5px;
+       display: none;
+       margin-right: 20px;
+     }
+     .login-body input, .reg-body input {
+       margin-bottom: 3px;
+     }
+     .button-loga {
+       background-color: lightgrey;
+       color: black;
+       padding: 6px 10px;
+       font-size: 12px;
+       border: 1px solid black;
+       border-radius: 3.5px;
+     }
+     .button-loga2 {
+       background-color: lightgrey;
+       color: black;
+       padding: 6px 10px;
+       font-size: 12px;
+       border: 1px solid black;
+       border-radius: 3.5px;
+     }
+     .button-logb {
+       background-color: lightgrey;
+       color: black;
+       padding: 6px 15px;
+       font-size: 12px;
+       border: 1px solid black;
+       border-radius: 3.5px;
+     }
+     .button-logb2 {
+       background-color: lightgrey;
+       color: black;
+       opacity: .6;
+       padding: 6px 15px;
+       font-size: 12px;
+       border: 1px solid black;
+       border-radius: 3.5px;
+     }
+     .logout{
+         margin-left: 85%;
+         margin-top: -70px;
+     }
+     .logout a{
+         color: white;
+     }
+     #welcome{
+         margin-left: 70%;
+         margin-top: -50px;
+     }
     </style>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -108,33 +193,100 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-
+    <script>
+    $('.log-email').focus();
+    $(document).on('click', '.button-logb', function(){
+      $('.reg-body').hide();
+      $('.login-body').show();
+      $('.log-email').focus();
+    });
+    $(document).on('click', '.button-logb', function() {
+      var $this = $(this);
+      var clickCount = ($this.data("click-count") || 0) + 1;
+      $this.data("click-count", clickCount);
+      if (clickCount % 2 === 0) {
+        $('.login-body').hide();
+      }
+    });
+    $(document).on('click', '.button-loga', function(){
+      $('.login-body').hide();
+      $('.reg-body').show();
+      $('.first_name').focus();
+    });
+    $(document).on('click', '.button-loga', function() {
+      var $this = $(this);
+      var clickCount = ($this.data("click-count") || 0) + 1;
+      $this.data("click-count", clickCount);
+      if (clickCount % 2 === 0) {
+        $('.reg-body').hide();
+      }
+    });
+    </script>
   </head>
   <body>
-      <nav class="navbar navbar-default navbar-fixed-top">
-         <div class="container">
-            <h2>trip tracker</h2>
-            <!--<button type="button" class="logout btn btn-primary"><a href="/logout">Logout</a></button>-->
-         </div>
-     </nav>
-     <div id='left'>
-         <div id="map"></div>
-         <a id="trafficToggle">Toggle Traffic Layer</a>
-         <div id="right-panel">
-         <div id="input">
-         <input type="text" id="start" placeholder="Start" name="start">
-         <input type='button' id="new" value="New Field">
-         <div id="new-field"></div>
-         <input type="text" id="end" placeholder="End" name="end">
-         <input type="submit" id="submit">
-         </div>
-         <div id="directions-panel"></div>
-         <form id="save-trip" action="/process_save" method="post">
-             <button type="button" class="btn btn-default btn-sm">Save My Trip</a></button>
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+      <h1>trip tracker</h1>
+        <div class="container2">
+          {% if 'id' not in request.session %}
+            <div class="login-head"><h3 class="login-head-log"><button class="button-logb">Login</button></h3><h3 class="login-head-reg"><button class="button-loga">Register</button></h3></div>
+            {% else %}
+              <h3 id='welcome'>
+                Welcome, {{user_name}}
+              </h3>
+            <button type="button" class="logout btn btn-primary"><a href="/logout">Logout</a></button>
+          {% endif %}
+        </div>
+        <div class="reg-body">
+          <form class="form-inline" action="/register" method="POST">
+          {% csrf_token %}
+            <div class="form-group">
+              <input type="text" class="form-control" name="name" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" name="user_name" placeholder="User Name">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+              <input type="password" class="form-control" name="confirm" placeholder="Confirm">
+            </div>
+            <input type="submit" class="btn btn-default btn-xs" value='Register'>
+          </form>
+        </div>
+        <div class="login-body">
+          <form class="form-inline" action="/login" method="POST">
+          {% csrf_token %}
+          <div class="form-group">
+            <input type="text" class="form-control" name="user_name" placeholder="User Name">
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Password">
+          </div>
+          <input type="submit" class="btn btn-default btn-xs" value='Login'>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <div id='left'>
+      <div id="map"></div>
+      <a id="trafficToggle">Toggle Traffic Layer</a>
+      <div id="right-panel">
+        <div id="input">
+          <input type="text" id="start" placeholder="Start" name="start">
+          <input type='button' id="new" value="New Field">
+          <div id="new-field"></div>
+          <input type="text" id="end" placeholder="End" name="end">
+          <button id="get_route">Submit</button>
+        </div>
+        <div id="directions-panel"></div>
+        <form id="save-trip" action="/process_save" method="post">
+          {% csrf_token %}
         </form>
-         </div>
-     </div>
-      <div class="cities"></div>
+      </div>
+    </div>
+    <div class="cities"></div>
     <script>
       $(document).ready(function(){
         var x = "<div class='box'><input class='places' name='waypoints' type='text' placeholder='Waypoint'><button class='btn btn-default btn-xs remove'>X</button></div>"
@@ -164,7 +316,6 @@
                  yelpbiz += res.businesses[i].name;
                  yelpbiz += "</a> Rating: <img src='"+res.businesses[i].rating_img_url_small+ "'/></p>";
                };
-               console.log(res);
                $this.siblings('.radio').css('display','inline-block');
                $this.siblings('.int_point').html(yelpbiz);
          });
@@ -174,6 +325,7 @@
          var term = $(this).val();
          var route = $(this).parent().parent().siblings('.address').attr('data-url')+'/'+term;
          var $this = $(this);
+         console.log(route);
          $.get(route, function(res) {
             var yelpbiz = "";
              for(var i = 0; i < 4 && i < res.businesses.length; i++) {
@@ -195,7 +347,7 @@
           center: {lat: 41.85, lng: -87.65}
         });
         directionsDisplay.setMap(map);
-        document.getElementById('submit').addEventListener('click', function() {
+        document.getElementById('get_route').addEventListener('click', function() {
           calculateAndDisplayRoute(directionsService, directionsDisplay);
         });
         var input1 = document.getElementById('start');
@@ -236,13 +388,8 @@
         var wpz = "";
         var ori = document.getElementById('start').value;
         var dest = document.getElementById('end').value;
-        var hidden = "";
+        var hidden = "<input type='hidden' name='begin' value='"+ori+"'  />{% csrf_token %}";
         var yelpcity = "";
-        // yelpcity += "<div class='location'><h3 class='address' data-url='/data/";
-        // yelpcity += ori;
-        // yelpcity += "'>"
-        // yelpcity += ori;
-        // yelpcity += "</h3><button class='show btn btn-default btn-xs'>+</button><div class='radio'></div><div class='int_point'></div></div>";
 
         var waypts = [];
         var checkboxArray = document.getElementsByClassName('places');
@@ -251,17 +398,21 @@
             location: checkboxArray[i].value,
             stopover: true
           });
+          hidden += "<input type='hidden' name='waypoints' value='"+checkboxArray[i].value+"'  />"
           yelpcity += "<div class='location'><h3 class='address' data-url='/data/";
           yelpcity += checkboxArray[i].value;
           yelpcity += "'>"
           yelpcity += checkboxArray[i].value;
           yelpcity += "</h3><button class='show btn btn-default btn-xs'>+</button><div class='radio'></div><div class='int_point'></div></div>";
         };
+        hidden += "<input type='hidden' name='end' value='"+dest+"'  />";
         yelpcity += "<div class='location'><h3 class='address' data-url='/data/";
         yelpcity += dest;
         yelpcity += "'>"
         yelpcity += dest;
         yelpcity += "</h3><button class='show btn btn-default btn-xs'>+</button><div class='radio'></div><div class='int_point'></div></div>";
+        hidden += "{% if 'id' in request.session %}<input type='submit' class='btn btn-default btn-sm' value='Save My Trip'/>{% endif %}"
+        $("#save-trip").html(hidden);
         $('.cities').html(yelpcity);
         directionsService.route({
           origin: document.getElementById('start').value,

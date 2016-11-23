@@ -2,6 +2,25 @@ from django.shortcuts import render, redirect, HttpResponse
 from yelp.client import Client
 from yelp.oauth1_authenticator import Oauth1Authenticator
 import rauth, json
+from .models import User, Trip, Comment
+from django.contrib import messages
+
+def login_check(request):
+    login_messages = User.userManager.login(request.session,str(request.POST['user_name']),str(request.POST['password']))
+    if login_messages[0]:
+		return redirect('/')
+    for message in login_messages[1]['errors']:
+        messages.add_message(request,messages.ERROR,message,extra_tags='login')
+    return redirect('/')
+
+def register(request):
+    register_messages = User.userManager.register_check(request.session,str(request.POST['name']),\
+            str(request.POST['user_name']),str(request.POST['password']),str(request.POST['confirm']))
+    if register_messages[0]:
+    	return redirect('/')
+    for message in register_messages[1]['errors']:
+        messages.add_message(request,messages.ERROR,message,extra_tags='register')
+    return redirect('/')
 
 def yelp(request,location,term='restaurant'):
 	params = {}
@@ -27,6 +46,61 @@ def yelp(request,location,term='restaurant'):
   	session.close()
   	return HttpResponse(json.dumps(data), content_type="application/json")
 
+def process_save(request):
+	post = dict(request.POST)
+	if 'waypoints' in post:
+		waypoints = post['waypoints']
+	else:
+		waypoints = []
+	route = post['begin'][0]+'->'
+	for i in range(len(waypoints)):
+		route += waypoints[i]+'->'
+	route += post['end'][0]
+	trip = Trip.tripManager.add_trip(request.session,route)
+	return redirect('/show_route/'+str(trip[1].id))
+
+def show_route(request,trip_id):
+	trip = Trip.tripManager.get(id=trip_id)
+	comments = Comment.objects.filter(trip=trip)
+	route = trip.route.split('->')
+	start = route[0]
+	waypoints = []
+	for i in range(1,len(route)-1):
+		waypoints.append(route[i])
+	end = route[len(route)-1]
+	data = {
+		'start':start,
+		'waypoints':waypoints,
+		'end' : end,
+		'comments':comments,
+		'trip_id':trip.id
+	}
+	return render(request,'trip/show_route.html',data)
+
+def add_comment(request,trip_id):
+	comment = str(request.POST['comment'])
+	data = {}
+	if len(comment) != 0:
+		user = User.userManager.get(id=request.session['id'])
+		trip = Trip.tripManager.get(id=trip_id)
+		comment = Comment.objects.create(comment=comment,user=user,trip=trip)
+		data['user_name'] = comment.user.user_name
+		data['created_at'] = str(comment.created_at)
+		data['comment'] = comment.comment
+	else:
+		data['comment'] = ''
+	return HttpResponse(json.dumps(data), content_type="application/json")
+
 
 def index(request):
-	return render(request, 'trip/index4.html')
+	data = {
+		'user_name':''
+	}
+	if 'id' in request.session:
+		user = User.userManager.get(id=request.session['id'])
+		data['user_name'] = user.user_name
+	return render(request, 'trip/index4.html',data)
+
+def logout(request):
+	request.session.pop('id')
+	return redirect('/')
