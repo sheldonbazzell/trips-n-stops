@@ -4,6 +4,16 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
     <title>Waypoints in directions</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Hammersmith+One|Merriweather|Oleo+Script|Righteous|Ubuntu" rel="stylesheet">
     <style>
       #right-panel {
         font-family: 'Roboto','sans-serif';
@@ -40,9 +50,10 @@
       }
       #right-panel {
         height: 30%;
+        padding: 0;
       }
       #input {
-        margin: 20px;
+        margin: 20px, 20px, 20px, 0;
         border-width: 2px;
         width: 40%;
         display: inline-block;
@@ -70,7 +81,7 @@
           display: inline-block;
           vertical-align: top;
           margin-left: 30px;
-          margin-top: 20px;
+          margin-top: 40px;
       }
       .location{
           display: block;
@@ -81,9 +92,7 @@
       h3.address{
           display: inline-block;
       }
-      #save-trip{
-          margin-left: 20px;
-      }
+
       button.remove{
           margin-left: 5px;
           margin-top: 10px;
@@ -98,6 +107,7 @@
      }
      .container{
        height: 100%;
+       width: 1800px;
      }
      .navbar h2{
        display: inline-block;
@@ -162,6 +172,7 @@
        font-size: 12px;
        border: 1px solid black;
        border-radius: 3.5px;
+       margin-right: 5px;
      }
      .button-logb2 {
        background-color: lightgrey;
@@ -173,8 +184,8 @@
        border-radius: 3.5px;
      }
      .logout{
-         margin-left: 85%;
-         margin-top: -70px;
+         margin-left: 90%;
+         margin-top: -75px;
      }
      .logout a{
          color: white;
@@ -183,16 +194,16 @@
          margin-left: 70%;
          margin-top: -50px;
      }
+     h1{
+       font-family: "Oleo Script";
+       font-size: 40pt;
+       margin-top: 10px;
+       display: inline-block;
+     }
+     #start, #end, .places{
+       width: 250px;
+     }
     </style>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script>
     $('.log-email').focus();
     $(document).on('click', '.button-logb', function(){
@@ -226,10 +237,10 @@
   <body>
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
-      <h1>trip tracker</h1>
+      <h1>Trip Tracker</h1>
         <div class="container2">
           {% if 'id' not in request.session %}
-            <div class="login-head"><h3 class="login-head-log"><button class="button-logb">Login</button></h3><h3 class="login-head-reg"><button class="button-loga">Register</button></h3></div>
+            <div class="login-head"><h3 class="login-head-log"><button class="btn btn-default btn-xs button-logb">Login</button></h3><h3 class="login-head-reg"><button class="btn btn-default btn-xs button-loga">Register</button></h3></div>
             {% else %}
               <h3 id='welcome'>
                 Welcome, {{user_name}}
@@ -279,11 +290,11 @@
           <div id="new-field"></div>
           <input type="text" id="end" placeholder="End" name="end">
           <button id="get_route">Submit</button>
+          <form id="save-trip" action="/process_save" method="post">
+            {% csrf_token %}
+          </form>
         </div>
         <div id="directions-panel"></div>
-        <form id="save-trip" action="/process_save" method="post">
-          {% csrf_token %}
-        </form>
       </div>
     </div>
     <div class="cities"></div>
