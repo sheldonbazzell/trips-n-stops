@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Waypoints in directions</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -53,13 +54,19 @@
         padding: 0;
       }
       #input {
-        margin: 20px, 20px, 20px, 0;
+        margin: 20px 20px 20px 0;
         border-width: 2px;
-        width: 40%;
-        display: inline-block;
-        vertical-align: top;
+        width: 60%;
         text-align: left;
         padding-top: 0;
+      }
+      #start, #new {
+        display: inline-block;
+        vertical-align: top;
+      }
+      #end, #get_route {
+        display: inline-block;
+        vertical-align: top;
       }
       .new-field {
         width: 200px;
@@ -107,7 +114,7 @@
      }
      .container{
        height: 100%;
-       width: 1800px;
+       width: 100%;
      }
      .navbar h2{
        display: inline-block;
@@ -154,15 +161,6 @@
        color: black;
        padding: 6px 10px;
        font-size: 12px;
-       border: 1px solid black;
-       border-radius: 3.5px;
-     }
-     .button-loga2 {
-       background-color: lightgrey;
-       color: black;
-       padding: 6px 10px;
-       font-size: 12px;
-       border: 1px solid black;
        border-radius: 3.5px;
      }
      .button-logb {
@@ -170,19 +168,10 @@
        color: black;
        padding: 6px 15px;
        font-size: 12px;
-       border: 1px solid black;
        border-radius: 3.5px;
        margin-right: 5px;
      }
-     .button-logb2 {
-       background-color: lightgrey;
-       color: black;
-       opacity: .6;
-       padding: 6px 15px;
-       font-size: 12px;
-       border: 1px solid black;
-       border-radius: 3.5px;
-     }
+
      .logout{
          margin-left: 90%;
          margin-top: -75px;
@@ -286,10 +275,10 @@
       <div id="right-panel">
         <div id="input">
           <input type="text" id="start" placeholder="Start" name="start">
-          <input type='button' id="new" value="New Field">
+          <input type='button' id="new" class="btn btn-primary btn-sm" value="New Field">
           <div id="new-field"></div>
           <input type="text" id="end" placeholder="End" name="end">
-          <button id="get_route">Submit</button>
+          <input type='button' id="get_route" class="btn btn-primary btn-sm" value="Get My Route">
           <form id="save-trip" action="/process_save" method="post">
             {% csrf_token %}
           </form>
@@ -311,6 +300,7 @@
         if($(this).siblings('.radio').css('display') != 'block' ){
             $(this).siblings('.radio').toggle();
             $(this).siblings('.int_point').toggle();
+            console.log('hello');
         }
         else{
             var route = $(this).siblings('.address').attr('data-url');
