@@ -1,0 +1,3 @@
+This app was created during a hackathon, and is designed to assist you in planning a road trip. Technologies integrated include the Google Maps API and the Yelp API. Using the map feature, you can input up to 23 stops along your trip (along with start and endpoints). Upon doing so, you have access to the top 5 restaurants, parks, and hotels on Yelp for each stop along the way (including your destination).
+
+The app was written in Python and JavaScript in the Django framework. DB is SQLite. The app is currently deployed using AWS at http://35.164.63.109/. Additional technologies used include HTML, CSS, and Bootstrap.
