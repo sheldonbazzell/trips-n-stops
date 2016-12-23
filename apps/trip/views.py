@@ -77,13 +77,13 @@ def show_route(request,trip_id):
 	}
 	return render(request,'trip/show_route.html',data)
 
-def add_comment(request,trip_id):
+def add_comment(request, trip_id):
 	comment = str(request.POST['comment'])
 	data = {}
 	if len(comment) != 0:
 		user = User.userManager.get(id=request.session['id'])
 		trip = Trip.tripManager.get(id=trip_id)
-		comment = Comment.objects.create(comment=comment,user=user,trip=trip)
+		comment = Comment.objects.create(comment=comment, user=user, trip=trip)
 		data['user_name'] = comment.user.user_name
 		data['created_at'] = str(comment.created_at)
 		data['comment'] = comment.comment
@@ -91,6 +91,12 @@ def add_comment(request,trip_id):
 		data['comment'] = ''
 	return HttpResponse(json.dumps(data), content_type="application/json")
 
+def add_image(request, trip_id):
+	if request.method == 'POST':
+		user = User.userManager.get(id=request.session['id'])
+		trip = Trip.tripManager.get(id=trip_id)
+		img = Image.objects.create(image=image, user=user, trip=trip)
+	return redirect('/wall')
 
 def index(request):
 	data = {
@@ -99,7 +105,22 @@ def index(request):
 	if 'id' in request.session:
 		user = User.userManager.get(id=request.session['id'])
 		data['user_name'] = user.user_name
-	return render(request, 'trip/index4.html',data)
+	return render(request, 'trip/index.html',data)
+
+def wall(request):
+	trips = Trip.tripManager.all()
+	comments = Comment.objects.all()
+	context = {
+		'trips':trips,
+		'comments':comments
+	}
+	return render(request, 'trip/wall.html', context)
+
+def delete_trip(request, trip_id):
+	trip = Trip.tripManager.filter(id=trip_id)
+	if trip:
+		trip.delete()
+	return redirect('/wall')
 
 def logout(request):
 	request.session.pop('id')

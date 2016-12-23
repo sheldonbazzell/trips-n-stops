@@ -16,6 +16,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Hammersmith+One|Merriweather|Oleo+Script|Righteous|Ubuntu" rel="stylesheet">
     <style>
+      .navbar {
+        height: 69px;
+      }
       #right-panel {
         font-family: 'Roboto','sans-serif';
         line-height: 30px;
@@ -116,6 +119,7 @@
        height: 100%;
        width: 100%;
      }
+
      .navbar h2{
        display: inline-block;
      }
@@ -173,15 +177,17 @@
      }
 
      .logout{
-         margin-left: 90%;
-         margin-top: -75px;
+         margin-top: 15px;
+         margin-right: 5px;
      }
      .logout a{
          color: white;
      }
      #welcome{
-         margin-left: 70%;
-         margin-top: -50px;
+         display: inline-block;
+         margin-left: 50%;
+         vertical-align: top;
+         margin-top: 20px
      }
      h1{
        font-family: "Oleo Script";
@@ -227,16 +233,15 @@
     <nav class="navbar navbar-default navbar-fixed-top">
       <div class="container">
       <h1>Trip Tracker</h1>
-        <div class="container2">
           {% if 'id' not in request.session %}
             <div class="login-head"><h3 class="login-head-log"><button class="btn btn-default btn-xs button-logb">Login</button></h3><h3 class="login-head-reg"><button class="btn btn-default btn-xs button-loga">Register</button></h3></div>
             {% else %}
               <h3 id='welcome'>
                 Welcome, {{user_name}}
               </h3>
-            <button type="button" class="logout btn btn-primary"><a href="/logout">Logout</a></button>
+            <button type="button" class="logout pull-right btn btn-primary"><a href="/wall">The Trips</a></button>
+            <button type="button" class="logout pull-right btn btn-primary"><a href="/logout">Logout</a></button>
           {% endif %}
-        </div>
         <div class="reg-body">
           <form class="form-inline" action="/register" method="POST">
           {% csrf_token %}

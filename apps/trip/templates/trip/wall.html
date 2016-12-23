@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Hammersmith+One|Merriweather|Oleo+Script|Righteous|Ubuntu" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Hammersmith+One|Merriweather|Oleo+Script|Righteous|Ubuntu" rel="stylesheet">
+	<!--Let browser know website is optimized for mobile-->
+</head>
+<style>
+	*{
+       padding: 0;
+       margin: 0;
+   }
+   .logo {
+   	text-decoration: none !important;
+   	color: black !important;
+   }
+   .navbar {
+        height: 69px;
+      }
+   .container {
+   	width: 100%;
+   }
+   .logout, .go_back{
+       float: right;
+       margin-top: -63px;
+   }
+   .logout a, .go_back a{
+       color: white;
+   }
+	button.logout{
+       margin-right: 5.5%;
+   }
+   h1{
+     font-family: "Oleo Script";
+     font-size: 40pt;
+     margin-top: 10px;
+   }
+   .container-fluid {
+   	margin-top: 8%;
+   }
+
+   .col-md-6 {
+   	width: 100%;
+   	text-align: center;
+   }
+
+   .col-sm-4{
+   	width: 45%;
+   	margin-left: 25%;
+   }
+
+	   .route, .delete {
+	   	display: inline-block;
+	   }
+
+</style>
+
+<body>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<h1><a class="logo" href="/">Trip Tracker</a></h1>
+			<button type="button" class="logout btn btn-primary"><a href="/logout">Logout</a></button>
+			<button type="button" class="go_back btn btn-primary"><a href="/">Go Back</a></button>
+		</div>
+	</nav>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6">
+				<div class="row">
+					{% for trip in trips %}
+					<div class="col-sm-4">
+	               <div class="thumbnail">
+	                   <div class="caption">
+									<h3 class="route"><a href="#">{{trip.route}}</a></h3>
+									<a class="delete btn btn-danger btn-xs pull-right" href="/trip/delete/{{trip.id}}">Delete Trip</a>
+									<h4>{{trip.created_at}}</h4>
+									<img src="http://mountain.org/wp-content/plugins/widgetkit/cache/mountain-stream-andes-18b4176b27f7613d2e8cfa11f420709a.jpg">
+									{% for comment in comments %}
+										{% if trip.id == comment.trip_id %}
+										<p class="message">{{comment.comment}}</p>
+										{% endif %}
+									{% endfor %}
+	                   </div>
+	               </div>
+	           </div>
+	           {% endfor %}
+	          </div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
