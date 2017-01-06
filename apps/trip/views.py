@@ -28,11 +28,11 @@ def yelp(request,location,term='restaurant'):
   	params["location"] = location
   	params["radius_filter"] = "8000"
   	params["limit"] = "10"
-	#Obtain these from Yelp's manage access page
-  	consumer_key = "szjwl0hfTZEnIZ0YMR3K7g"
-  	consumer_secret = "OjSOA4XoTyzr5VG_lDwu1L2vbkE"
-  	token = "NE6ro_inbWdOSnxEranZJHFhN3BDwuMw"
-  	token_secret = "rnaMfpdRLKWKM0t1ezNkFmY8wt4"
+	#Obtain these from Yelp's manage access page // removed for security
+  	consumer_key = ""
+  	consumer_secret = ""
+  	token = ""
+  	token_secret = ""
 
   	session = rauth.OAuth1Session(
     consumer_key = consumer_key,
