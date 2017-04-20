@@ -41,7 +41,6 @@ def yelp(request,location,term='restaurant'):
     access_token_secret = token_secret)
 
   	request = session.get("http://api.yelp.com/v2/search",params=params)
-  	#Transforms the JSON API response into a Python dictionary
   	data = request.json()
   	session.close()
   	return HttpResponse(json.dumps(data), content_type="application/json")
